@@ -26,7 +26,6 @@ public class AppTest
 	@Test
 	public void serverSocketsShouldBeOpened() throws IOException {
 		boolean result = testServer.open(6666);
-		
 		assertTrue(result);
 	}
 	
@@ -38,7 +37,6 @@ public class AppTest
 		clientThread.start();
 		clientThread.join();
 		boolean result = testServer.accept();
-		
 		assertTrue(result);
 	}
 	
@@ -52,7 +50,6 @@ public class AppTest
 		clientThread.join();
 		testServer.sendMessage("Message successfully sent.");
 		String clientReceivedMessage = client.getReceivedMessage();
-		
 		assertEquals("Message successfully sent.", clientReceivedMessage);
 	}
 	
@@ -66,7 +63,6 @@ public class AppTest
 		clientThread.join();
 		client.sendMessage("Successfully received message.");
 		String receivedMessage = testServer.getReceivedMessage();
-		
 		assertEquals("Successfully received message.", receivedMessage);
 	}
 	
@@ -78,7 +74,6 @@ public class AppTest
 		testServer.run();
 		clientThread.join();
 		boolean result = testServer.isClosed();
-		
 		assertTrue(result);
 	}
 	
