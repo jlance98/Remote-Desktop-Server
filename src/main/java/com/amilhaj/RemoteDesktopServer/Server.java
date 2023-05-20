@@ -34,7 +34,7 @@ public class Server {
 
 	public boolean open(int port) {
 		try {
-			serverSocket = new ServerSocket(port);
+			this.setServerSocket(new ServerSocket(port));
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -42,18 +42,18 @@ public class Server {
 		}
 	}
 
-	public boolean accept() {
-		try {
-			System.out.println("[SERVER] Awaiting connection.");
-			clientSocket = serverSocket.accept();
-			out = new PrintWriter(clientSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			System.out.println("[SERVER] Connection established.");
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
+	public boolean accept() {	
+			try {
+				System.out.println("[SERVER] Awaiting connection.");
+				this.setSocket(serverSocket.accept());
+				this.setPrintWriter(clientSocket);
+				this.setBufferedReader(clientSocket);
+				System.out.println("[SERVER] Connection established.");
+				return true;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
 	}
 	
 	public String getReceivedMessage() {
@@ -84,6 +84,47 @@ public class Server {
 	
 	public boolean isClosed() {
 		return clientSocket.isClosed();
+	}
+
+	//----------GETTERS & SETTERS-------------
+	public void setServerSocket(ServerSocket serverSocket) {
+		this.serverSocket = serverSocket;
+	}
+	
+	public ServerSocket getServerSocket() {
+		return this.serverSocket;
+	}
+	
+	public void setSocket(Socket clientSocket) {
+		this.clientSocket = clientSocket;
+	}
+
+	public Socket getSocket() {
+		return this.clientSocket;
+	}
+
+	public void setPrintWriter(Socket clientSocket) {
+		try {
+			this.out = new PrintWriter(clientSocket.getOutputStream(), true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public PrintWriter getPrintWriter() {
+		return this.out;
+	}
+	
+	public void setBufferedReader(Socket clientSocket) {
+		try {
+			this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public BufferedReader getBufferedReader() {
+		return this.in;
 	}
 
 }

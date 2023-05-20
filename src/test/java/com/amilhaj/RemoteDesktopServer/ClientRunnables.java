@@ -17,7 +17,7 @@ class ClientConnect implements Runnable {
 	@Override
 	public void run() {
 		try {
-			new Socket("192.168.1.24", 6666);
+			new Socket("127.0.0.1", 6666);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -35,7 +35,7 @@ class ClientReceivedMessage implements Runnable {
 	@Override
 	public void run() {
 		try {
-			clientSocket = new Socket("192.168.1.24", 6666);
+			clientSocket = new Socket("127.0.0.1", 6666);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -64,7 +64,7 @@ class ClientSendMessage implements Runnable {
 	@Override
 	public void run() {
 		try {
-			clientSocket = new Socket("192.168.1.24", 6666);
+			clientSocket = new Socket("127.0.0.1", 6666);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -93,7 +93,7 @@ class ClientLoseConnection implements Runnable {
 	@Override
 	public void run() {
 		try {
-			clientSocket = new Socket("192.168.1.24", 6666);
+			clientSocket = new Socket("127.0.0.1", 6666);
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			out.println("Connection confirmed.");
 			Thread.sleep(100);

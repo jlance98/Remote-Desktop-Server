@@ -1,8 +1,15 @@
 package com.amilhaj.RemoteDesktopServer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,10 +19,18 @@ public class AppTest
 {
 	
 	private Server testServer;
+	private Socket testClient;
+	private ServerSocket testServerSocket;
+	private Socket testSocket;
+	private ServerSocket mockServerSocket;
+	private Socket mockSocket;
 
 	@Before
-	public void setup() {
+	public void setup() throws IOException {
 		testServer = new Server();
+		mockServerSocket = mock(ServerSocket.class);
+		mockSocket = mock(Socket.class);
+		
 	}
 	
 	@After
@@ -57,7 +72,7 @@ public class AppTest
 	}
 	
 	@Test
-	public void serverShouldReceiveMessages() throws InterruptedException {
+	public void serverShouldReceiveMessages() throws InterruptedException, IOException {
 		System.out.println("[TEST] serverShouldReceiveMessages()");
 		testServer.open(6666);
 		ClientSendMessage client = new ClientSendMessage();
