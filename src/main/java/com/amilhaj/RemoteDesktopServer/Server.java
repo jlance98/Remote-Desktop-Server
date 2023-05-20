@@ -25,34 +25,30 @@ public class Server {
 	public void run() throws IOException {
 		this.open(6666);
 		this.accept();
-		String input, response;
+		String input;
 		while ((input = this.getReceivedMessage()) != null) {
 			this.sendMessage(input);
 		}
 		this.close();
 	}
 
-	public boolean open(int port) {
+	public void open(int port) {
 		try {
 			this.setServerSocket(new ServerSocket(port));
-			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 
-	public boolean accept() {	
+	public void accept() {	
 			try {
 				System.out.println("[SERVER] Awaiting connection.");
 				this.setSocket(serverSocket.accept());
-				this.setPrintWriter(clientSocket);
-				this.setBufferedReader(clientSocket);
+				this.setPrintWriter(new PrintWriter(clientSocket.getOutputStream(), true));
+				this.setBufferedReader(new BufferedReader(new InputStreamReader(clientSocket.getInputStream())));
 				System.out.println("[SERVER] Connection established.");
-				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
-				return false;
 			}
 	}
 	
@@ -103,24 +99,16 @@ public class Server {
 		return this.clientSocket;
 	}
 
-	public void setPrintWriter(Socket clientSocket) {
-		try {
-			this.out = new PrintWriter(clientSocket.getOutputStream(), true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void setPrintWriter(PrintWriter printWriter) {
+		this.out = printWriter;
 	}
 	
 	public PrintWriter getPrintWriter() {
 		return this.out;
 	}
 	
-	public void setBufferedReader(Socket clientSocket) {
-		try {
-			this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void setBufferedReader(BufferedReader bufferedReader) {
+		this.in = bufferedReader;
 	}
 	
 	public BufferedReader getBufferedReader() {
