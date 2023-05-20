@@ -25,35 +25,31 @@ public class Server {
 	public void run() throws IOException {
 		this.open(6666);
 		this.accept();
-		String input, response;
+		String input;
 		while ((input = this.getReceivedMessage()) != null) {
 			this.sendMessage(input);
 		}
 		this.close();
 	}
 
-	public boolean open(int port) {
+	public void open(int port) {
 		try {
-			serverSocket = new ServerSocket(port);
-			return true;
+			this.setServerSocket(new ServerSocket(port));
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 
-	public boolean accept() {
-		try {
-			System.out.println("[SERVER] Awaiting connection.");
-			clientSocket = serverSocket.accept();
-			out = new PrintWriter(clientSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			System.out.println("[SERVER] Connection established.");
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
+	public void accept() {	
+			try {
+				System.out.println("[SERVER] Awaiting connection.");
+				this.setSocket(serverSocket.accept());
+				this.setPrintWriter(new PrintWriter(clientSocket.getOutputStream(), true));
+				this.setBufferedReader(new BufferedReader(new InputStreamReader(clientSocket.getInputStream())));
+				System.out.println("[SERVER] Connection established.");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	}
 	
 	public String getReceivedMessage() {
@@ -84,6 +80,39 @@ public class Server {
 	
 	public boolean isClosed() {
 		return clientSocket.isClosed();
+	}
+
+	//----------GETTERS & SETTERS-------------
+	public void setServerSocket(ServerSocket serverSocket) {
+		this.serverSocket = serverSocket;
+	}
+	
+	public ServerSocket getServerSocket() {
+		return this.serverSocket;
+	}
+	
+	public void setSocket(Socket clientSocket) {
+		this.clientSocket = clientSocket;
+	}
+
+	public Socket getSocket() {
+		return this.clientSocket;
+	}
+
+	public void setPrintWriter(PrintWriter printWriter) {
+		this.out = printWriter;
+	}
+	
+	public PrintWriter getPrintWriter() {
+		return this.out;
+	}
+	
+	public void setBufferedReader(BufferedReader bufferedReader) {
+		this.in = bufferedReader;
+	}
+	
+	public BufferedReader getBufferedReader() {
+		return this.in;
 	}
 
 }
