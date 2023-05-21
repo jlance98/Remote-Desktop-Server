@@ -3,7 +3,11 @@ package com.amilhaj.RemoteDesktopServer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,16 +52,16 @@ public class AppTest
 	}
 	
 	@Test
-	public void serverSocketsShouldBeOpened() throws IOException {
-		System.out.println("- [TEST] serverSocketShouldBeOpened()");
+	public void serverShouldSetServerSocket() throws IOException {
+		System.out.println("- [TEST] serverShouldSetServerSocket()");
 		
 		testServer.open(6666);
 		assertNotNull(testServer.getServerSocket());
 	}
 	
 	@Test
-	public void serverSocketsShouldAcceptConnections() throws InterruptedException, IOException {
-		System.out.println("- [TEST] serverSocketsShouldAcceptConnections()");
+	public void serverShouldSetSocketAndStreams() throws InterruptedException, IOException {
+		System.out.println("- [TEST] serverShouldSetSocketAndStreams()");
 		testServer.setServerSocket(mockServerSocket);
 		when(mockServerSocket.accept()).thenReturn(mockSocket);
 		when(mockSocket.getOutputStream()).thenReturn(outputStream);
@@ -100,6 +104,37 @@ public class AppTest
 		testServer.close();
 		verify(mockServerSocket).close();
 		verify(mockSocket).close();
+	}
+	
+	@Test
+	public void serverRunFunctionTest() throws IOException {
+		System.out.println("- [TEST] serverRunFunctionTest()");
+		Server spyServer = spy(testServer);
+		doCallRealMethod().when(spyServer).run();
+		
+		doAnswer(setServerSocket -> {
+	        spyServer.setServerSocket(mockServerSocket);
+	        return null;
+	    }).when(spyServer).open(6666);
+		
+		doAnswer(setSocketAndStreams -> {
+	        spyServer.setSocket(mockSocket);
+	        spyServer.setPrintWriter(out);
+	        spyServer.setBufferedReader(in);
+	        return null;
+	    }).when(spyServer).accept();
+		
+		when(in.readLine()).thenReturn("Hello", "World", null);
+		
+		
+		spyServer.run();
+		verify(spyServer).open(6666);
+		verify(spyServer).accept();
+		verify(spyServer, times(3)).getReceivedMessage();
+		verify(spyServer).sendMessage("Hello");
+		verify(spyServer).sendMessage("World");
+		verify(spyServer).close();
+		
 	}
 	
 }
