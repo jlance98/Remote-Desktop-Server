@@ -77,12 +77,8 @@ public class Server {
 			clientSocket.close();
 		}
 	}
-	
-	public boolean isClosed() {
-		return clientSocket.isClosed();
-	}
 
-	//----------GETTERS & SETTERS-------------
+	// Getters & Setters
 	public void setServerSocket(ServerSocket serverSocket) {
 		this.serverSocket = serverSocket;
 	}
